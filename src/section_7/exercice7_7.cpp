@@ -8,10 +8,9 @@ using std::string;
 
 struct SalesItem
 {
-    string isbn() const { return bookNo; }
+    std::string isbn() const { return bookNo; }
     SalesItem &combine(const SalesItem &);
-    void print_SalesItem();
-    string bookNo;
+    std::string bookNo;
     unsigned units_sold = 0;
     double revenue = 0.0;
 };
@@ -23,34 +22,46 @@ SalesItem &SalesItem::combine(const SalesItem &item)
     return *this;
 }
 
-void SalesItem::print_SalesItem()
+std::istream &read(std::istream &is, SalesItem &item)
 {
-    cout << "Item :"
-         << this->bookNo << " Unit sold:" << this->units_sold
-         << " Revenue:" << this->revenue << endl;
+    double price = 0;
+    is >> item.bookNo >> item.units_sold >> price;
+    item.revenue = item.units_sold * price;
+    return is;
+}
+
+std::ostream &print(std::ostream &os, const SalesItem &item)
+{
+    os << item.isbn() << " " << item.units_sold << " " << item.revenue << endl;
+    return os;
+}
+
+SalesItem add(const SalesItem &lhs, const SalesItem &rhs)
+{
+    SalesItem sum = lhs;
+    sum.combine(rhs);
+    return sum;
 }
 
 int main()
 {
     SalesItem total, trans;
-    double price;
-    cin >> total.bookNo >> total.units_sold >> price;
-    total.revenue = total.units_sold * price;
-    while (cin >> trans.bookNo >> trans.units_sold >> price)
+    read(cin, total);
+    while (read(cin, trans))
     {
-        trans.revenue = trans.units_sold * price;
+
         if (total.bookNo == trans.bookNo)
         {
             total.combine(trans);
         }
         else
         {
-            total.print_SalesItem();
+            print(cout, total);
             total.bookNo = trans.bookNo;
             total.units_sold = trans.units_sold;
             total.revenue = trans.revenue;
         }
     }
-    total.print_SalesItem();
+    print(cout, total);
     return 0;
 }
