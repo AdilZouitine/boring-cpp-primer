@@ -28,15 +28,15 @@ int main()
 
     for (std::list<int>::const_iterator it = ilist.cbegin(); it != ilist.cend();)
     {
-        if (*it % 2 == 1)
-            it = ilist.erase(it);
-        else
+        if (*it % 2)
             ++it;
+        else
+            it = ilist.erase(it);
     }
 
     for (std::vector<int>::const_iterator it = ivect.cbegin(); it != ivect.cend();)
     {
-        if (*it % 2 == 0)
+        if (*it % 2)
             it = ivect.erase(it);
         else
             ++it;
